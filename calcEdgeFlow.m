@@ -18,12 +18,15 @@ peaks_hist(i) = numel(findpeaks(Fx_hist_left));
 [disp_distance matching_error_distance]=SAD_blockmatching_stereo(window,max_search_distance,Fx_hist_left,Fx_hist_right);
 
 % Calculate distance per column
+faulty_distance = zeros(size(disp_distance));
+
 distance=zeros(size(disp_distance));
 for k=1:length(disp_distance)
-    if disp_distance(k) ~= 0
+    if disp_distance(k) ~= 0 && disp_distance(k) ~= max_search_distance
         distance(k)=pxperrad*0.06./(abs(disp_distance(k)));
     else
-        distance(k)= 12;
+        distance(k)= 0;
+        faulty_distance(k) = 1;
     end
 end
 distance(:,end-border)=0;
@@ -57,6 +60,7 @@ frequency = 1/(t_frame(i)-t_frame(i-1));
 velocity_column_forward=  distance.*displacement.x*frequency;
 
 velocity_x_ptx=[border:image_size(2)-border];
+velocity_x_ptx=velocity_x_ptx(find(faulty_distance==0));
 velocity_x_pty=velocity_column_forward(velocity_x_ptx);
 px=polyfit(velocity_x_ptx,velocity_x_pty,1);
 velocity_tot_forward = px(1);
