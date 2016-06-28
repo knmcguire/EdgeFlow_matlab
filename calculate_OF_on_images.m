@@ -26,23 +26,27 @@ for i= start_i:end_i
     I_right=I(1:94,129:256);
     I_left=I(1:94,1:128);
     
-    % shift I_left to compensate for stereocamera shift
-    if shift_stereo_image>0
-        I_left = [I_left(:,1+shift_stereo_image:end),0*ones(size(I_left,1),shift_stereo_image)];
-        I_right(:,end-shift_stereo_image+1:end) = 0;
-    end
-    if shift_stereo_image<0
-        I_left = [0*ones(size(I_left,1),abs(shift_stereo_image)),I_left(:,1:end-abs(shift_stereo_image))];
-        I_right(:,1:abs(shift_stereo_image)) = 0;
+    %     shift I_left to compensate for stereocamera shift
+    
+    if i>start_i+max_frame_horizon
+        pixelshift_yaw_derotate = -deg2rad(yaw_frame(i-1)-yaw_frame(i))*pxperrad;
+        
+        calcEdgeFlow
+        
+        if shift_stereo_image>0
+            I_left = [I_left(:,1+shift_stereo_image:end),0*ones(size(I_left,1),shift_stereo_image)];
+            I_right(:,end-shift_stereo_image+1:end) = 0;
+        end
+        if shift_stereo_image<0
+            I_left = [0*ones(size(I_left,1),abs(shift_stereo_image)),I_left(:,1:end-abs(shift_stereo_image))];
+            I_right(:,1:abs(shift_stereo_image)) = 0;
+        end
+        
+        calcFarneback
+        
+        
     end
     
-    if i>start_i+max_frame_horizon 
-        pixelshift_yaw_derotate = -deg2rad(yaw_frame(i-1)-yaw_frame(i))*pxperrad;
-
-        calcFarneback
-        calcEdgeFlow
-    end
-      
     I_left_prev = I_left;
     I_right_prev = I_right;
     edge_histogram(2:end)=edge_histogram(1:end-1);
