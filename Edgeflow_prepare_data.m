@@ -7,7 +7,7 @@ database_loc = 'D:\knmcguire\My Documents\OneDrive\PhD\Experiments\DataBase Ster
 shift_stereo_image = 5;
 elseif stereoboard_type == 2
 database_loc ='D:\knmcguire\My Documents\OneDrive\PhD\Experiments\DataBase Stereoboard\forward Camer\track';
-shift_stereo_image = -1;
+shift_stereo_image = -2;
 end
 
 [cam_Vx_frame, cam_Vz_frame, yaw_frame, t_frame] = getOptiTrack(track,database_loc);
@@ -19,7 +19,7 @@ yaw_frame(1:4)=0;
 % New and old database are taken at different times. Some changes had been made to the optitrack system which requires reverting of the body axis. 
 if stereoboard_type==1 
 database_loc = 'D:\knmcguire\My Documents\OneDrive\PhD\Experiments\DataBase Stereoboard New\take';
-cam_Vx_frame = cam_Vx_frame;
+cam_Vx_frame = -cam_Vx_frame;
 elseif stereoboard_type == 2
 database_loc ='D:\knmcguire\My Documents\OneDrive\PhD\Experiments\DataBase Stereoboard\forward Camer\track';
  cam_Vz_frame = -cam_Vz_frame;

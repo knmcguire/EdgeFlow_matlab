@@ -22,7 +22,7 @@ end
    
 for x = border_left:border_right   
     for r=0:D
-        SAD_temp(r+1)=sum(abs(hist_left(x-W:x+W)-hist_right(x-W+r-stereo_shift:x+W+r-stereo_shift)));
+        SAD_temp(r+1)=sum(abs(hist_right(x-W:x+W)-hist_left(x-W+r-stereo_shift:x+W+r-stereo_shift)));
     end
     [value,index]=min(SAD_temp);
     displacement(x)=index - 1;

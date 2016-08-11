@@ -22,9 +22,16 @@ for i= start_i:end_i
     
     %Load Images
     filename = strcat(dirname,names{i});
-    I=imread(filename);
-    I_right=I(1:94,129:256);
-    I_left=I(1:94,1:128);
+    if stereoboard_type==1
+        I=imread(filename);
+        I_left=I(1:94,129:256);
+        I_right=I(1:94,1:128);
+    else
+        I=rgb2gray(imread(filename));
+        I_left=I(1:94,129:256);
+        I_right=I(1:94,1:128);
+        
+    end
     
     %     shift I_left to compensate for stereocamera shift
     
@@ -33,17 +40,16 @@ for i= start_i:end_i
         
         calcEdgeFlow
         
-        if shift_stereo_image>0
-            I_left = [I_left(:,1+shift_stereo_image:end),0*ones(size(I_left,1),shift_stereo_image)];
-            I_right(:,end-shift_stereo_image+1:end) = 0;
-        end
         if shift_stereo_image<0
+            I_left = [I_left(:,1+abs(shift_stereo_image):end),0*ones(size(I_left,1),abs(shift_stereo_image))];
+            I_right(:,end+shift_stereo_image+1:end) = 0;
+        end
+        if shift_stereo_image>0
             I_left = [0*ones(size(I_left,1),abs(shift_stereo_image)),I_left(:,1:end-abs(shift_stereo_image))];
             I_right(:,1:abs(shift_stereo_image)) = 0;
         end
         
         calcFarneback
-        
         
     end
     
