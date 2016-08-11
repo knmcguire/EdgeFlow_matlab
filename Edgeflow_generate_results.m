@@ -27,10 +27,10 @@ pxperrad=image_size(2)/deg2rad(FOV(1));
 
 
 %% Load all position data and images
-stereoboard=1:2;
+stereoboard=1;
 
-chosen_tracks(1).track = 1:22;
-chosen_tracks(2).track = 1:6;
+chosen_tracks(1).track = 3;
+chosen_tracks(2).track = 2;
 
 matching_error_flow_tot = [];
 peaks_hist_tot = [];
