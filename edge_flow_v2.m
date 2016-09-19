@@ -25,12 +25,12 @@ if max_frame_horizon>1
     end
     if flow_mag_x < min_flow && frame_previous_number_prev.x < max_frame_horizon;
         frame_previous_number.x=frame_previous_number_prev.x+1;
-%     else
-%       if frame_previous_number_prev.x > 1
-%           frame_previous_number.x=frame_previous_number_prev.x-1;
-%       else
-%       end
-
+        %     else
+        %       if frame_previous_number_prev.x > 1
+        %           frame_previous_number.x=frame_previous_number_prev.x-1;
+        %       else
+        %       end
+        
     end
     if flow_mag_y > max_flow && frame_previous_number_prev.y >1;
         frame_previous_number.y=frame_previous_number_prev.y-1;

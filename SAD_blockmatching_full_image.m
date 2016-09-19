@@ -1,31 +1,25 @@
-function displacement=SAD_blockmatching_full_image(hist1,hist2,D)
+function displacement=SAD_blockmatching_full_image(hist1,hist2,D,stereo_shift)
 
 if size(hist1)~=size(hist2)
-    disp('not okay')
+    disp('Histograms should be same size!')
 end
 
 
 
-SAD_temp=zeros(2*D,1);
+SAD_temp=zeros(D+1,1);
 
 
 
-for i=-D:D
+for i=0:D
     
-    if i<0
-%         keyboard
-        SAD_temp(i+D+1)=sum(abs(hist1(1:end+i)-hist2(-i+1:end)));
-    else if i==0
-            SAD_temp(i+D+1)=sum(abs(hist1-hist2));
-
-        else
-            SAD_temp(i+D+1)=sum(abs(hist1(i+1:end)-hist2(1:end-i)));
-
-        end
-    end
-
+    
+    SAD_temp(i+1)=sum(abs(hist2(stereo_shift:end-i-1)-hist1(i+1:end-stereo_shift)));    
     
 end
-    [value,index]=min(SAD_temp);
-    displacement=index+1-D;
+
+[value,index]=min(SAD_temp);
+displacement=D-1;
+
+
+
 %     keyboard

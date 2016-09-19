@@ -31,25 +31,41 @@ pixelrot.y = 0;
     edge_flow_v2(Fx_hist_left,Fy_hist_left,edge_histogram,previous_parameters,...
     frame_previous_number_prev,window,max_search_distance,max_frame_horizon,pixelrot);
 
+displacement_stereo_global=SAD_blockmatching_full_image(Fx_hist_left,Fx_hist_right,max_search_distance,shift_stereo_image);
+
+
+
+
+
+
+
 pixelshift_yaw_derotate_EF=0;
 translation_yaw(i) = new_parameters.translation.x;
 
 
 % Calculate distance per column
 faulty_distance = zeros(size(disp_distance));
-faulty_distance(find(disp_distance<=1)) = 1;%a stereo displacement smaller than 1 is too small resolution to get a valuable distance measurement out of ti
+faulty_distance(find(disp_distance<=0)) = 1;%a stereo displacement smaller than 1 is too small resolution to get a valuable distance measurement out of ti
 
 % On the borders, no valuable information is present
-faulty_distance(end-max_search_distance:end)=1;
-faulty_distance(1:max_search_distance)=1;
-
+if(fix_mod==1)
+    faulty_distance(end-max_search_distance:end)=1;
+    faulty_distance(1:max_search_distance)=1;
+end
+if(fix_mod==0)
+    faulty_distance(end-max_search_distance-window-1:end)=1;
+    faulty_distance(1:max_search_distance+window+1)=1;
+    
+end
 distance=zeros(size(disp_distance));
 distance(find(faulty_distance==0)) = pxperrad*0.06./disp_distance(find(faulty_distance==0));
 
 %Save the smallest min measured
+min_distance(i) = mean(distance(find(faulty_distance==0)));
 prev_disp_distance = disp_distance;
 pixelshift_yaw_derotate_EF=-deg2rad(yaw_frame(i-frame_previous_number.x)-yaw_frame(i))*pxperrad/frame_previous_number.x;
-
+% figure(1),plot(distance), hold on, plot(disp_distance),hold off
+% keyboard
 %Derotation (based on IMU (1))
 displacement.x  = displacement.x - pixelshift_yaw_derotate_EF;
 displacement.x([1:border,end-border:end]) =0;
@@ -64,22 +80,43 @@ velocity_column_forward=  distance.*displacement.x*frequency;
 velocity_x_ptx=[1:image_size(2)];
 velocity_x_ptx=velocity_x_ptx(find(faulty_distance==0));
 velocity_x_pty=velocity_column_forward(find(faulty_distance==0));
+if(fitting==1)
+    
+    px=polyfit(velocity_x_ptx,velocity_x_pty,1)
+end
 
-px=polyfit(velocity_x_ptx,velocity_x_pty,1);
+if (fitting==2)
+    %TODO: decide weither to use RANSAC or not...
+    inlier_threshold = 1;
+    inlier_ratio = 0.5;
+    if length(velocity_x_ptx)>=2
+        px = ransac([velocity_x_ptx;velocity_x_pty],100,inlier_threshold,inlier_ratio);
+    else
+        px = [0;0];
+    end
+end
 
-%TODO: decide weither to use RANSAC or not...
-% inlier_threshold = 1;
-% inlier_ratio = 0.5;
-% if length(velocity_x_ptx)>=2
-%     px = ransac([velocity_x_ptx;velocity_x_pty],100,inlier_threshold,inlier_ratio);
-% else
-%     px = [0;0];
-% end
+if fitting ==3
+    weights = 1./distance(find(faulty_distance==0)).^(1.5);
+    result=fit(velocity_x_ptx',velocity_x_pty','poly1','Weights',weights);
+    px(1)=result.p1;
+    px(2)=result.p2;
+end
 
-velocity_tot_forward = px(1);
-velocity_tot_sideways = (px(2)+px(1)*round(image_size(2)/2))*radperpx;
+
+% distance_stereo_global =  pxperrad*0.06./(displacement_stereo_global );
+distance_stereo_global = (mean(distance));
+
+velocity_tot_forward_global = new_parameters.divergence.x * distance_stereo_global * frequency;
+velocity_tot_sideways_global = (new_parameters.translation.x+new_parameters.divergence.x*round(image_size(2)/2))*radperpx * distance_stereo_global * frequency;
+
+
+% keyboard
+velocity_tot_forward_pixelwise = px(1);
+velocity_tot_sideways_pixelwise = (px(2)+px(1)*round(image_size(2)/2))*radperpx;
 
 matching_error_flow_t(i) = mean(matching_error_flow.x);
-velocity_tot_forward_plot(i) =   velocity_tot_forward;
-velocity_tot_sideways_plot(i) = velocity_tot_sideways;
-
+velocity_tot_forward_plot(i) =   velocity_tot_forward_pixelwise;
+velocity_tot_sideways_plot(i) = velocity_tot_sideways_pixelwise;
+velocity_tot_forward_global_plot(i) =   velocity_tot_forward_global;
+velocity_tot_sideways_global_plot(i) = velocity_tot_sideways_global;
