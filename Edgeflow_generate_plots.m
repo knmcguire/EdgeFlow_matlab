@@ -6,8 +6,7 @@ if(~make_plots_journal)
     figure(1),subplot(2,1,1), plot(t_frame(3:end),cam_Vz_frame(3:end))
     xlim([t_frame(1),t_frame(end)])
     hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_plot(start_i:end_i),'r');
-        hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_global_plot(start_i:end_i),'m');
-
+    
     hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_FB_plot(start_i:end_i),'g');
     hold off
     ylim([-1 1])
@@ -19,16 +18,14 @@ if(~make_plots_journal)
     subplot(2,1,2), plot(t_frame(start_i:end_i),cam_Vx_frame(start_i:end_i))
     
     hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_plot(start_i:end_i),'r');
-    
-            hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_global_plot(start_i:end_i),'m');
-
+        
     hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_FB_plot(start_i:end_i),'g');
-
+    
     hold off
     
     ylim([-1 1])
     xlim([t_frame(1),t_frame(end)])
-    legend('Ground Truth', 'Edge Flow','EdgeFlow px', 'F\"arneback')
+    legend('Ground Truth', 'Edge Flow', 'F\"arneback')
     
     ylabel('velocity')
     xlabel('Time[s]')

@@ -3,10 +3,10 @@
 
 % retrieve data set and set specific calibration data
 if stereoboard_type==1
-database_loc = 'D:\knmcguire\My Documents\OneDrive\PhD\Experiments\DataBase Stereoboard New\take';
+database_loc = '..\stereo_images_database\DataBase_Stereoboard_1\take';
 shift_stereo_image = 5;
 elseif stereoboard_type == 2
-database_loc ='D:\knmcguire\My Documents\OneDrive\PhD\Experiments\DataBase Stereoboard\forward Camer\track';
+database_loc ='..\stereo_images_database\DataBase_Stereoboard_2\forward_camera\track';
 shift_stereo_image = -2;
 end
 
@@ -18,12 +18,10 @@ yaw_frame(1:4)=0;
 
 % New and old database are taken at different times. Some changes had been made to the optitrack system which requires reverting of the body axis. 
 if stereoboard_type==1 
-database_loc = 'D:\knmcguire\My Documents\OneDrive\PhD\Experiments\DataBase Stereoboard New\take';
-cam_Vx_frame = cam_Vx_frame;
+database_loc = '..\stereo_images_database\DataBase_Stereoboard_1\take';
 elseif stereoboard_type == 2
-database_loc ='D:\knmcguire\My Documents\OneDrive\PhD\Experiments\DataBase Stereoboard\forward Camer\track';
+database_loc ='..\stereo_images_database\DataBase_Stereoboard_2\forward_camera\track';
  cam_Vz_frame = -cam_Vz_frame;
-
 end
 
 %Load Images (uses sort_nat)

@@ -15,7 +15,7 @@ frame_previous_number.y = 1;
 
 opticFlow = opticalFlowFarneback;
 opticFlow_stereo = opticalFlowFarneback;
-
+distance_gradient_plot = [];
 %% Loop through images
 for i= start_i:end_i
     disp(i)
@@ -33,19 +33,18 @@ for i= start_i:end_i
         
     end
     
-    %     shift I_left to compensate for stereocamera shift
     
     if i>start_i+max_frame_horizon
+        %     shift I_left to compensate for stereocamera shift
         pixelshift_yaw_derotate = -deg2rad(yaw_frame(i-1)-yaw_frame(i))*pxperrad;
+        
+        %% Calculate Edgeflow
         
         calcEdgeFlow
         
-%         figure(2),subplot(3,2,1),imshow(I),subplot(3,1,2),plot(velocity_tot_forward_plot),
-%         ylim([-0.5,0.5])
-%         subplot(3,1,3),plot(distance*2),hold on,plot(displacement.x*10),plot(velocity_column_forward),plot(polyval(px,[1:128])),hold off
-%          ylim([-50,50])
-
-%         keyboard
+        %% Calculate Farneback
+        % Shift stereo images for Farneback (Note that this is done within
+        % the code of EdgeFlow already)
         if shift_stereo_image<0
             I_left = [I_left(:,1+abs(shift_stereo_image):end),0*ones(size(I_left,1),abs(shift_stereo_image))];
             I_right(:,end+shift_stereo_image+1:end) = 0;
@@ -59,6 +58,7 @@ for i= start_i:end_i
         
     end
     
+    % Save values for next loop
     I_left_prev = I_left;
     I_right_prev = I_right;
     edge_histogram(2:end)=edge_histogram(1:end-1);
@@ -67,6 +67,8 @@ for i= start_i:end_i
     
     
 end
+
+%Prepare values for plotting
 velocity_tot_forward_plot(1:max_frame_horizon*2) = 0;
 velocity_tot_sideways_plot(1:max_frame_horizon*2) = 0;
 
@@ -74,4 +76,4 @@ velocity_error_forward= abs(velocity_tot_forward_plot(3:end)' - cam_Vz_frame(3:e
 velocity_error_sideways= abs(velocity_tot_sideways_plot(3:end)' - cam_Vx_frame(3:end));
 peaks_hist = peaks_hist(3:end)';
 matching_error_flow_t = matching_error_flow_t(3:end)';
-min_distance = min_distance(3:end)';
+mean_distance = mean_distance(3:end)';

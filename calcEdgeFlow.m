@@ -1,6 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%EDGEFLOW%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Make Edge Histograms
+% Make Edge Histograms 
+%(Note that this is same principle as a oneway conv2 implemitation)
+
 Fx_left= imfilter(I_left,kernel) + imfilter(I_left,fliplr(kernel));
 Fy_left= imfilter(I_left,kernel') + imfilter(I_left,fliplr(kernel)');
 Fx_right= imfilter(I_right,kernel) + imfilter(I_right,fliplr(kernel));
@@ -21,6 +23,7 @@ end
 %calculate displacement for distance
 [disp_distance matching_error_distance]=SAD_blockmatching_stereo(window,max_search_distance,Fx_hist_left,Fx_hist_right,shift_stereo_image);
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%calculate edgeflow%%%%%%%%%%%%%%%%%%%%
 
@@ -34,38 +37,28 @@ pixelrot.y = 0;
 displacement_stereo_global=SAD_blockmatching_full_image(Fx_hist_left,Fx_hist_right,max_search_distance,shift_stereo_image);
 
 
-
-
-
-
-
 pixelshift_yaw_derotate_EF=0;
 translation_yaw(i) = new_parameters.translation.x;
 
-
+%%
 % Calculate distance per column
 faulty_distance = zeros(size(disp_distance));
-faulty_distance(find(disp_distance<=0)) = 1;%a stereo displacement smaller than 1 is too small resolution to get a valuable distance measurement out of ti
+faulty_distance(find(disp_distance<2)) = 1;%a stereo displacement smaller than 1 is too small resolution to get a valuable distance measurement out of ti
 
 % On the borders, no valuable information is present
-if(fix_mod==1)
-    faulty_distance(end-max_search_distance:end)=1;
-    faulty_distance(1:max_search_distance)=1;
-end
-if(fix_mod==0)
-    faulty_distance(end-max_search_distance-window-1:end)=1;
-    faulty_distance(1:max_search_distance+window+1)=1;
-    
-end
+
+faulty_distance(end-max_search_distance-window-1:end)=1;
+faulty_distance(1:max_search_distance+window+1)=1;
+
 distance=zeros(size(disp_distance));
 distance(find(faulty_distance==0)) = pxperrad*0.06./disp_distance(find(faulty_distance==0));
 
-%Save the smallest min measured
-min_distance(i) = mean(distance(find(faulty_distance==0)));
+%Save the mean distance measured
+mean_distance(i) = mean(distance(find(faulty_distance==0)));
+
 prev_disp_distance = disp_distance;
 pixelshift_yaw_derotate_EF=-deg2rad(yaw_frame(i-frame_previous_number.x)-yaw_frame(i))*pxperrad/frame_previous_number.x;
-% figure(1),plot(distance), hold on, plot(disp_distance),hold off
-% keyboard
+
 %Derotation (based on IMU (1))
 displacement.x  = displacement.x - pixelshift_yaw_derotate_EF;
 displacement.x([1:border,end-border:end]) =0;
@@ -80,9 +73,10 @@ velocity_column_forward=  distance.*displacement.x*frequency;
 velocity_x_ptx=[1:image_size(2)];
 velocity_x_ptx=velocity_x_ptx(find(faulty_distance==0));
 velocity_x_pty=velocity_column_forward(find(faulty_distance==0));
+
 if(fitting==1)
     
-    px=polyfit(velocity_x_ptx,velocity_x_pty,1)
+    px=polyfit(velocity_x_ptx,velocity_x_pty,1);
 end
 
 if (fitting==2)
@@ -97,13 +91,14 @@ if (fitting==2)
 end
 
 if fitting ==3
-    weights = 1./distance(find(faulty_distance==0)).^(1.5);
+    weights = (1.1- matching_error_flow.x(find(faulty_distance==0))/max(matching_error_flow.x(find(faulty_distance==0))));
+    weights_plot = (1.1- matching_error_flow.x/max(matching_error_flow.x));
     result=fit(velocity_x_ptx',velocity_x_pty','poly1','Weights',weights);
     px(1)=result.p1;
     px(2)=result.p2;
 end
 
-
+%%
 % distance_stereo_global =  pxperrad*0.06./(displacement_stereo_global );
 distance_stereo_global = (mean(distance));
 
