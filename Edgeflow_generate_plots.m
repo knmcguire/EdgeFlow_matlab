@@ -69,22 +69,29 @@ else
     
     plot(time,zeros(size(time)),'k:'),
     hold off
+    if track==4
     hleg= legend('Groundtruth','EdgeFlow',...
-        'FarneBack');
+        'FarneBack','Location','southeast');
+    set(hleg,'FontSize',6);
     %     set(hleg,'Position',[0.655833314916502 0.874444441719661 0.261785718781608 0.12619047891526], 'FontSize',7);
     legend boxoff
+    end
     xlim([time(1),time(end)])
     
     xlim_figure =get(gca,'xlim');
     ylim([-1.0 1.0])
     box off
-    descr = {['\fontsize{6}NMXM_x:\color{red} ',num2str(nmxm_x,'%.4f'),' \color{green}(',num2str(nmxm_x_FB,'%.4f'),'),  \fontsize{6}\color{black}MSE_x\color{red}: ' ,num2str(MSE_x,'%.4f'),' \color{green}(',num2str(MSE_x_FB,'%.4f'),'), \fontsize{6}\color{black}var_x: \color{red}',num2str(var_x,'%.4f'),' (\color{green}',num2str(var_x_FB,'%.4f'),')']};
-    text(xlim_figure(1)+1,1.0,descr,...
+    descr = {['\fontsize{4}NMXM_x:\color{red} ',num2str(nmxm_x,'%.4f'),' \color{green}(',num2str(nmxm_x_FB,'%.4f'),'),  \fontsize{4}\color{black}MSE_x\color{red}: ' ,num2str(MSE_x,'%.4f'),' \color{green}(',num2str(MSE_x_FB,'%.4f'),'), \fontsize{4}\color{black}var_x: \color{red}',num2str(var_x,'%.4f'),' (\color{green}',num2str(var_x_FB,'%.4f'),')']};
+    text(xlim_figure(1),1,descr,...
         'VerticalAlignment','top',...
-        'HorizontalAlignment','left', 'FontSize',7)
-    xlabel('Time [s]')
+        'HorizontalAlignment','left', 'FontSize',4)
+    xlabel('Time [s]');
+        if track == 4
+
+    
     ylabel('Velocity (x) [m/s]')
-    title({' ';' '; 'velocity x-direction'})
+        end
+   % title({' ';' '; 'velocity x-direction'})
     %y-direction
     subplot(2,1,2),
     plot(time, velocity_y_optitrack),hold on,
@@ -98,24 +105,32 @@ else
     ylim([-1.0 1.0])
     xlim_figure =get(gca,'xlim');
     
-    descr = {['\fontsize{6}NMXM_y:\color{red} ',num2str(nmxm_y,'%.4f'),' \color{green}(',num2str(nmxm_y_FB,'%.4f'),'),  \fontsize{6}\color{black}MSE_y\color{red}: ' ,num2str(MSE_y,'%.4f'),' \color{green}(',num2str(MSE_y_FB,'%.4f'),'), \fontsize{6}\color{black}var_y: \color{red}',num2str(var_y,'%.4f'),' (\color{green}',num2str(var_y_FB,'%.4f'),')']};
-    text(xlim_figure(1)+1,1.0,descr,...
+    descr = {['\fontsize{4}NMXM_y:\color{red} ',num2str(nmxm_y,'%.4f'),' \color{green}(',num2str(nmxm_y_FB,'%.4f'),'),  \fontsize{4}\color{black}MSE_y\color{red}: ' ,num2str(MSE_y,'%.4f'),' \color{green}(',num2str(MSE_y_FB,'%.4f'),'), \fontsize{4}\color{black}var_y: \color{red}',num2str(var_y,'%.4f'),' (\color{green}',num2str(var_y_FB,'%.4f'),')']};
+    text(xlim_figure(1),1.0,descr,...
         'VerticalAlignment','top',...
-        'HorizontalAlignment','left', 'FontSize',7)
+        'HorizontalAlignment','left', 'FontSize',4)
     box off
-    title('velocity y-direction')
+%     title('velocity y-direction')
     xlabel('Time [s]')
+    if track == 4
     ylabel('Velocity (y) [m/s]')
-    
+    end
     set(gcf,'Position',[0 0 400 500])
     
     
-    filename_savevel = sprintf('../journal_paper_edgeflow/matlab_plots/Edgeflow_Farneback_board_%d_data_%d',stereoboard_type,track);
+    filename_savevel = sprintf('generated_plots/Edgeflow_Farneback_board_%d_data_%d',stereoboard_type,track);
     
-    printpdf(gcf,[filename_savevel,'.pdf'])
+    cleanfigure;
+    matlab2tikz([filename_savevel,'.tex'],'height', '\figureheight', 'width', '\figurewidth',...
+   'extraaxisoptions',['title style={font={\small\bfseries}},'...
+                       'legend style={font=\tiny},'])
+    %printpdf(gcf,[filename_savevel,'.pdf'])
     
     filename = sprintf('generated_plots/Edgeflow_Farneback_board_%d_data_%d.png',stereoboard_type,track);
     
     
     saveas(gcf,filename)
+    
+    
+    
 end

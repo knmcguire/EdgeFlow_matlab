@@ -10,7 +10,8 @@ close all
 clc
 
 %save plots of journal
-make_plots_journal = false;
+make_plots_journal = true;
+addpath('../matlab2tikz/src');
 
 %% Edge flow algorthim with test data
 %Define function parameters
@@ -31,7 +32,7 @@ pxperrad=image_size(2)/deg2rad(FOV(1));
 stereoboard=1; % select which stereoboard to choose from (1 and/or 2, see Edgeflow_prepare_data)
 
 % Select which track to choose from to  calculate edgeflow on
-chosen_tracks(1).track = [4,16]; 
+chosen_tracks(1).track = [4,16];
 chosen_tracks(2).track = [];
 
 % Intialize arrays for boxplot
@@ -46,7 +47,7 @@ fitting=1; %select a fitting type (1: linear line fit, 2: ransac, 3: weighted li
 for stereoboard_type = stereoboard
     for track = chosen_tracks(stereoboard_type).track;
         
-         % Prepare the images, groundtruth data and calibration
+        % Prepare the images, groundtruth data and calibration
         Edgeflow_prepare_data
         
         
@@ -58,7 +59,7 @@ for stereoboard_type = stereoboard
         Edgeflow_generate_plots
         
         keyboard
-
+        
         pause(0.2)
         
         % Save data for statical analysis
@@ -66,7 +67,7 @@ for stereoboard_type = stereoboard
         peaks_hist(find(peaks_hist==inf & isnan(peaks_hist))) = 0;
         velocity_error_forward(find(velocity_error_forward==inf & isnan(velocity_error_forward))) = 0;
         velocity_error_sideways(find(velocity_error_sideways==inf & isnan(velocity_error_sideways))) = 0;
-
+        
         matching_error_flow_tot = [matching_error_flow_tot; matching_error_flow_t];
         velocity_error_forward_tot = [velocity_error_forward_tot ; velocity_error_forward];
         velocity_error_sideways_tot = [velocity_error_sideways_tot ; velocity_error_sideways];
@@ -100,21 +101,25 @@ subplot(2,1,1),
 boxplot(velocity_error_forward_tot,round(mean_distance_tot*2)/2)
 ylim([0 0.3])
 xlim([1.5 7.5])
-ylabel('Velocity Error [m/s]')
-xlabel('Mean depth measured [m]')
-title('Boxplot  x-direction')
+ylabel('Vel Error (x) [m/s]')
+% title('Boxplot  x-direction')
 
 subplot(2,1,2),
 boxplot(velocity_error_sideways_tot,round(mean_distance_tot*2)/2)
 ylim([0 0.3])
 xlim([1.5 7.5])
 
-ylabel('Velocity Error [m/s]')
+ylabel('Vel Error (y) [m/s]')
 xlabel('Mean depth measured [m]')
-title('Boxplot  y-direction')
+% title('Boxplot  y-direction')
 , hold on,
 
 if (make_plots_journal)
     filename_savevel = sprintf('generated_plots/boxplot1',stereoboard_type,track);
-    printpdf(gcf,[filename_savevel,'.pdf'])
+    %     printpdf(gcf,[filename_savevel,'.pdf'])
+    %
+    cleanfigure;
+    matlab2tikz([filename_savevel,'.tex'],'height', '\figureheight', 'width', '\figurewidth',...
+        'extraaxisoptions',['title style={font={\small\bfseries}},'...
+        'legend style={font=\tiny},'])
 end
