@@ -15,6 +15,16 @@ frame_previous_number.y = 1;
 
 opticFlow = opticalFlowFarneback;
 opticFlow_stereo = opticalFlowFarneback;
+
+opticFlow.NeighborhoodSize = window*2+1;
+opticFlow.NumPyramidLevels = 1;
+opticFlow.NumIterations = 1;
+
+opticFlow_stereo.NeighborhoodSize = window*2+1;
+opticFlow_stereo.NumPyramidLevels = 1;
+opticFlow_stereo.NumIterations = 1;
+
+
 distance_gradient_plot = [];
 %% Loop through images
 for i= start_i:end_i
