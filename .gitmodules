@@ -1,0 +1,3 @@
+[submodule "stereoboard_testing"]
+	path = stereoboard_testing
+	url = git@github.com:knmcguire/stereoboard_testing.git

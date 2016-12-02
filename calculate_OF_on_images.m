@@ -24,12 +24,12 @@ for i= start_i:end_i
     filename = strcat(dirname,names{i});
     if stereoboard_type==1
         I=imread(filename);
-        I_left=I(1:94,129:256);
-        I_right=I(1:94,1:128);
+        I_left=I(1:96,129:256);
+        I_right=I(1:96,1:128);
     else
         I=rgb2gray(imread(filename));
-        I_left=I(1:94,129:256);
-        I_right=I(1:94,1:128);
+        I_left=I(1:96,129:256);
+        I_right=I(1:96,1:128);
         
     end
     

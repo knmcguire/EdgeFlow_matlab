@@ -4,7 +4,7 @@ function [cam_Vx_frame, cam_Vz_frame, yaw_frame, t_frame] = getOptiTrack(track,d
 
 %% load image timing data
 
-time=fopen([database_loc num2str(track) '\timing.dat']);
+time=fopen([database_loc num2str(track) '/timing.dat']);
 
 
     tline = fgets(time);
@@ -30,7 +30,7 @@ end
 
 
 %% load optitrack data
-position=fopen([database_loc num2str(track) '\position.dat']);
+position=fopen([database_loc num2str(track) '/position.dat']);
 
 tline = fgets(time);
 
