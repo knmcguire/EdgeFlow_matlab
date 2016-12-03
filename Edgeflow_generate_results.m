@@ -55,7 +55,7 @@ for stereoboard_type = stereoboard
         calculate_OF_on_images
         
         %% Plot velocity to groundtruth
-        
+        calculate_quality_values
         Edgeflow_generate_plots
         
         keyboard

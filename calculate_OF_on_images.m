@@ -13,16 +13,26 @@ new_parameters.divergence.y=0.0;
 frame_previous_number.x = 1;
 frame_previous_number.y = 1;
 
-opticFlow = opticalFlowFarneback;
-opticFlow_stereo = opticalFlowFarneback;
 
-opticFlow.NeighborhoodSize = window*2+1;
-opticFlow.NumPyramidLevels = 1;
-opticFlow.NumIterations = 1;
+%parameters for Farneback optical flow
+OF_Farneback = opticalFlowFarneback;
+OF_Farneback_stereo = opticalFlowFarneback;
 
-opticFlow_stereo.NeighborhoodSize = window*2+1;
-opticFlow_stereo.NumPyramidLevels = 1;
-opticFlow_stereo.NumIterations = 1;
+OF_Farneback.NeighborhoodSize = window*2+1;
+OF_Farneback.NumPyramidLevels = 1;
+OF_Farneback.NumIterations = 1;
+
+OF_Farneback_stereo.NeighborhoodSize = window*2+1;
+OF_Farneback_stereo.NumPyramidLevels = 1;
+OF_Farneback_stereo.NumIterations = 1;
+
+
+%parameters for Lucas Kanade optical flow
+
+%no possiblity to change windowsize???
+
+OF_LK = opticalFlowLK;
+OF_LK_stereo = opticalFlowLK;
 
 
 distance_gradient_plot = [];
@@ -65,6 +75,7 @@ for i= start_i:end_i
         end
         
         calcFarneback
+        calcLucasKanade
         
     end
     
