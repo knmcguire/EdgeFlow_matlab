@@ -9,6 +9,10 @@ velocity_y_optitrack = cam_Vx_frame(start_i:end_i)';
 velocity_x_edgeflow = velocity_tot_forward_plot(start_i:end_i);
 velocity_y_edgeflow = velocity_tot_sideways_plot(start_i:end_i);
 
+
+velocity_x_edgeflow_global = velocity_tot_forward_global_plot(start_i:end_i);
+velocity_y_edgeflow_global = velocity_tot_sideways_global_plot(start_i:end_i);
+
 velocity_x_farneback = velocity_tot_forward_FB_plot(start_i:end_i);
 velocity_y_farneback = velocity_tot_sideways_FB_plot(start_i:end_i);
 

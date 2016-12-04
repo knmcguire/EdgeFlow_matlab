@@ -46,7 +46,9 @@ else
     plot(  time, velocity_x_edgeflow),
     plot(  time, velocity_x_farneback,'g') ,
     plot(  time, velocity_x_lucaskanade,'m:');
-    
+    plot(time,velocity_x_edgeflow_global,'r--');
+    plot(  time, velocity_x_edgeflow, 'r'),
+
     plot(time,zeros(size(time)),'k:'),
     hold off
     
@@ -75,11 +77,14 @@ else
     % title({' ';' '; 'velocity x-direction'})
     %y-direction
     subplot(2,1,2),
-    plot(time, velocity_y_optitrack),hold on,
-    plot(  time, velocity_y_edgeflow),
-    plot(  time, velocity_y_farneback,'g')
-    s=plot(  time, velocity_x_lucaskanade,'m:');
-    
+    plot(time, -velocity_y_optitrack),hold on,
+    plot(  time, -velocity_y_edgeflow),
+    plot(  time, -velocity_y_farneback,'g')
+    s=plot(  time, -velocity_y_lucaskanade,'m:');
+        plot(time, -velocity_y_edgeflow_global,'r--');
+    plot(  time, -velocity_y_edgeflow, 'r'),
+
+
     plot(time,zeros(size(time)),'k-')
     hold off
     

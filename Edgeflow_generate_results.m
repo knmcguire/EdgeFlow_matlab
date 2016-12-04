@@ -16,7 +16,7 @@ addpath('../matlab2tikz/src');
 %% Edge flow algorthim with test data
 %Define function parameters
 max_frame_horizon=5;
-window=8;
+window=5;
 max_search_distance=15;
 kernel=[1 0 -1];
 FOV=[60,50];

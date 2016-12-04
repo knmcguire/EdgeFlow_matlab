@@ -109,7 +109,7 @@ AX2(1).YLim = [0 0.1];
 AX2(2).YLim = [0 1];
 AX1(2).Visible = 'off';
 
-AX1(1).YLabel.String = ['MSE';'VAR'];
+AX1(1).YLabel.String = ['MSE / VAR'];
 AX2(2).YLabel.String = ['NMXM'];
 
 HMSEFB.LineStyle = '-';
@@ -121,10 +121,11 @@ HVARFB.LineStyle = '-.';
 HMSEFB.Color = 'g';
 HNMXMFB.Color = 'g';
 HVARFB.Color = 'g';
-HMSE.Color = 'b';
-HNMXM.Color = 'b';
-HVAR.Color = 'b';
+HMSE.Color = 'r';
+HNMXM.Color = 'r';
+HVAR.Color = 'r';
 
+title( 'Forward Velocity')
 
 subplot(2,1,2),
 
@@ -141,7 +142,7 @@ AX2(1).YLim = [0 0.02];
 AX2(2).YLim = [0 0.7];
 % AX1(2).Visible = 'off';
 
-AX1(1).YLabel.String = ['MSE';'VAR'];
+AX1(1).YLabel.String = ['MSE / VAR'];
 AX2(2).YLabel.String = ['NMXM'];
 
 HMSEFB.LineStyle = '-';
@@ -153,27 +154,29 @@ HVARFB.LineStyle = '-.';
 HMSEFB.Color = 'g';
 HNMXMFB.Color = 'g';
 HVARFB.Color = 'g';
-HMSE.Color = 'b';
-HNMXM.Color = 'b';
-HVAR.Color = 'b';
+HMSE.Color = 'r';
+HNMXM.Color = 'r';
+HVAR.Color = 'r';
+
+title( 'Sideways Velocity')
 
 
-H_dummy1 = plot(NaN,NaN,'k');
-H_dummy2 = plot(NaN,NaN,'--k');
-H_dummy3 = plot(NaN,NaN,'-.k');
+H_dummy1 = plot(2,2,'k');
+H_dummy2 = plot(1,1,'-.k');
+H_dummy3 = plot(1,1,'--k');
 
 h=[HMSEFB HMSE, H_dummy1 H_dummy2 H_dummy3];
 legend(h, 'Farneback','EdgeFlow','MSE','VAR', 'NMXM','orientation','horizontal' ,'Location', 'northwest')
         legend boxoff
-        
-        xlabel('window size')
-
+       
+   
+        xlabel('window size [px]')
 
 % set(gca,'FontSize',6)
 
 if make_plots_journal
     filename_savevel = sprintf('generated_plots/Edgeflow_Farneback_windowsize_board_%d_data_%d',stereoboard_type,track);
-        cleanfigure;
+%         cleanfigure;
     matlab2tikz([filename_savevel,'.tex'],'height', '\figureheight', 'width', '\figurewidth',...
         'extraaxisoptions',['title style={font={\small\bfseries}},'...
         'legend style={font=\tiny},scaled ticks=false,  tick label style={/pgf/number format/fixed}'])
