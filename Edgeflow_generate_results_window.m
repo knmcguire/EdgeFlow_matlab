@@ -88,52 +88,92 @@ end
 
 %% Make boxplots of results
 window= 1:9;
+wf=window*2+1;
 make_plots_journal = true;
 
-figure, subplot(3,2,1), plot(window*2+1,[results_per_windowsize.MSE_x_FB],'g'), hold on,plot(window*2+1,[results_per_windowsize.MSE_x]); %xlim([0 9])
-ylabel MSE
-title x
+fig = figure, 
 
-ylim([0 0.1])
-box off
-
-subplot(3,2,2), plot(window*2+1,[results_per_windowsize.MSE_y_FB],'g'), hold on,plot(window*2+1,[results_per_windowsize.MSE_y]); %xlim([0 9])
-title y
-ylim([0 0.1])
-box off
-
-legend Farneback EdgeFlow
-legend boxoff
-
-subplot(3,2,3), plot(window*2+1,[results_per_windowsize.nmxm_x_FB],'g'), hold on,plot(window*2+1,[results_per_windowsize.nmxm_x]); %xlim([0 9])
-ylabel NMXM
-ylim([0 1])
-box off
-
-subplot(3,2,4), plot(window*2+1,[results_per_windowsize.nmxm_y_FB],'g'), hold on,plot(window*2+1,[results_per_windowsize.nmxm_y]); %xlim([0 9])
-ylim([0 1])
-box off
+set(fig,'defaultAxesColorOrder',[[ 0 0 0];[0 0 0]]);
+subplot(2,1,1),
 
 
-subplot(3,2,5), plot(window*2+1,[results_per_windowsize.var_x_FB],'g'), hold on,plot(window*2+1,[results_per_windowsize.var_x]);%xlim([0 9])
+[AX1,HMSEFB,HNMXMFB] = plotyy(wf,[results_per_windowsize.MSE_x_FB],wf,[results_per_windowsize.nmxm_x_FB]);
+hold on,
+[AX2,HMSE,HNMXM] = plotyy(wf,[results_per_windowsize.MSE_x],wf,[results_per_windowsize.nmxm_x]);
+HVARFB = plot(wf,[results_per_windowsize.var_x_FB]);
+HVAR = plot(wf,[results_per_windowsize.var_x]);
 
-ylim([0 0.05])
-box off
+AX1(1).YLim = [0 0.1];
+AX1(2).YLim = [0 1];
+AX2(1).YLim = [0 0.1];
+AX2(2).YLim = [0 1];
+AX1(2).Visible = 'off';
 
-ylabel VAR
-xlabel('window size')
+AX1(1).YLabel.String = ['MSE';'VAR'];
+AX2(2).YLabel.String = ['NMXM'];
+
+HMSEFB.LineStyle = '-';
+HMSE.LineStyle = '-';
+HNMXMFB.LineStyle = '--';
+HNMXM.LineStyle = '--';
+HVAR.LineStyle = '-.';
+HVARFB.LineStyle = '-.';
+HMSEFB.Color = 'g';
+HNMXMFB.Color = 'g';
+HVARFB.Color = 'g';
+HMSE.Color = 'b';
+HNMXM.Color = 'b';
+HVAR.Color = 'b';
 
 
-subplot(3,2,6), plot(window*2+1,[results_per_windowsize.var_y_FB],'g'), hold on,plot(window*2+1,[results_per_windowsize.var_y]);%xlim([0 9])
-ylim([0 0.05])
-box off
+subplot(2,1,2),
 
-xlabel('window size')
-set(gca,'FontSize',6)
+
+[AX1,HMSEFB,HNMXMFB] = plotyy(wf,[results_per_windowsize.MSE_y_FB],wf,[results_per_windowsize.nmxm_y_FB]);
+hold on,
+[AX2,HMSE,HNMXM] = plotyy(wf,[results_per_windowsize.MSE_y],wf,[results_per_windowsize.nmxm_y]);
+HVARFB = plot(wf,[results_per_windowsize.var_y_FB]);
+HVAR = plot(wf,[results_per_windowsize.var_y]);
+
+AX1(1).YLim = [0 0.02];
+AX1(2).YLim = [0 0.7];
+AX2(1).YLim = [0 0.02];
+AX2(2).YLim = [0 0.7];
+% AX1(2).Visible = 'off';
+
+AX1(1).YLabel.String = ['MSE';'VAR'];
+AX2(2).YLabel.String = ['NMXM'];
+
+HMSEFB.LineStyle = '-';
+HMSE.LineStyle = '-';
+HNMXMFB.LineStyle = '--';
+HNMXM.LineStyle = '--';
+HVAR.LineStyle = '-.';
+HVARFB.LineStyle = '-.';
+HMSEFB.Color = 'g';
+HNMXMFB.Color = 'g';
+HVARFB.Color = 'g';
+HMSE.Color = 'b';
+HNMXM.Color = 'b';
+HVAR.Color = 'b';
+
+
+H_dummy1 = plot(NaN,NaN,'k');
+H_dummy2 = plot(NaN,NaN,'--k');
+H_dummy3 = plot(NaN,NaN,'-.k');
+
+h=[HMSEFB HMSE, H_dummy1 H_dummy2 H_dummy3];
+legend(h, 'Farneback','EdgeFlow','MSE','VAR', 'NMXM','orientation','horizontal' ,'Location', 'northwest')
+        legend boxoff
+        
+        xlabel('window size')
+
+
+% set(gca,'FontSize',6)
 
 if make_plots_journal
     filename_savevel = sprintf('generated_plots/Edgeflow_Farneback_windowsize_board_%d_data_%d',stereoboard_type,track);
-    %     cleanfigure;
+        cleanfigure;
     matlab2tikz([filename_savevel,'.tex'],'height', '\figureheight', 'width', '\figurewidth',...
         'extraaxisoptions',['title style={font={\small\bfseries}},'...
         'legend style={font=\tiny},scaled ticks=false,  tick label style={/pgf/number format/fixed}'])
