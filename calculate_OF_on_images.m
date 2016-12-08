@@ -36,6 +36,13 @@ OF_LK_stereo = opticalFlowLK;
 
 
 distance_gradient_plot = [];
+
+if make_video ==true
+    writerObj = VideoWriter('generated/edgeflow.avi'); % Name it.
+    writerObj.FrameRate = 10; % How many frames per second.
+    open(writerObj);
+end
+
 %% Loop through images
 for i= start_i:end_i
     disp(i)
@@ -61,6 +68,71 @@ for i= start_i:end_i
         %% Calculate Edgeflow
         
         calcEdgeFlow
+        
+        if make_video ==true
+            
+            figure(3)
+            %         set(gcf,'units','normalized','outerposition',[0 0 1 1])
+            ,subplot(2,2,1),imshow(I)
+            title('stereo image')
+            subplot(2,2,2),
+            yyaxis left
+            plot(edge_histogram(1).x,'b'), hold on,
+            plot(edge_histogram(2).x,'r')
+            hold off
+            set(gca,'YTick',[])
+            
+            %         yyaxis right
+            yyaxis right
+            plot(displacement.x,'Color',[0.5 0 0.5]);hold on
+            plot(zeros(1,128),'k:');
+            xlim([20 100])
+            ylim([-5 5])
+            hold off
+            set(gca,'XTick',[])
+            set(gca,'YTick',[])
+            
+            title('EdgeFlow')
+            
+            Fx_right= imfilter(I_right,kernel) + imfilter(I_right,fliplr(kernel));
+            
+            Fx_hist_right = sum(Fx_right);
+            subplot(2,2,3),
+            yyaxis left
+            
+            plot(edge_histogram(1).x,'b'), hold on,
+            plot([Fx_hist_right(shift_stereo_image:end)],'g')
+            hold off
+            set(gca,'YTick',[])
+            
+            yyaxis right
+            
+            plot(disp_distance,'Color',[0 0.5 0.5])
+            ylim([0 10])
+            hold off
+            xlim([20 100])
+            set(gca,'XTick',[])
+            set(gca,'YTick',[])
+            
+            title('EdgeStereo')
+            
+            if i>max_frame_horizon*2
+                subplot(2,2,4),plot(velocity_tot_forward_plot(max_frame_horizon*2:i))
+                hold on
+                plot(velocity_tot_sideways_plot(max_frame_horizon*2:i))
+                ylim([-1 1])
+                ylabel [M/s]
+                
+                hold off
+                title('velocity by Edge-FS')
+                
+                
+            end
+            %         keyboard
+            pause(0.1)
+            frame = getframe(gcf); % 'gcf' can handle if you zoom in to take a movie.
+            writeVideo(writerObj, frame);
+        end
         
         %% Calculate Farneback
         % Shift stereo images for Farneback (Note that this is done within
@@ -88,7 +160,10 @@ for i= start_i:end_i
     
     
 end
-
+if make_video ==true
+    
+    close(writerObj); % Saves the movie.
+end
 %Prepare values for plotting
 velocity_tot_forward_plot(1:max_frame_horizon*2) = 0;
 velocity_tot_sideways_plot(1:max_frame_horizon*2) = 0;

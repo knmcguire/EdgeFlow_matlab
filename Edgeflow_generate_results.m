@@ -10,7 +10,9 @@ close all
 clc
 
 %save plots of journal
+make_video = false;
 make_plots_journal = true;
+
 addpath('../matlab2tikz/src');
 
 %% Edge flow algorthim with test data
@@ -56,7 +58,12 @@ for stereoboard_type = stereoboard
         
         %% Plot velocity to groundtruth
         calculate_quality_values
+        
+        
         Edgeflow_generate_plots
+        
+        
+        
         
         keyboard
         
@@ -76,43 +83,43 @@ for stereoboard_type = stereoboard
         
         clearvars -except max_frame_horizon  window max_search_distance kernel FOV image_size border radperpx...
             matching_error_flow_tot peaks_hist_tot velocity_error_sideways_tot velocity_error_forward_tot mean_distance_tot ...
-            pxperrad stereoboard_type chosen_tracks track stereoboard fitting fix make_plots_journal
+            pxperrad stereoboard_type chosen_tracks track stereoboard fitting fix make_plots_journal make_video
     end
     
 end
 
 %% Make boxplots of results
 
-figure, subplot(2,1,1),
-boxplot(velocity_error_forward_tot',peaks_hist_tot')
-subplot(2,1,2),
-boxplot(velocity_error_sideways_tot,peaks_hist_tot)
-ylim([0 0.3])
-ylabel('Velocity Error [m/s]')
-
-xlabel('Amount of peaks')
-title('Boxplot y-direction')
-
-, hold on,
-
+% figure, subplot(2,1,1),
+% boxplot(velocity_error_forward_tot',peaks_hist_tot')
+% subplot(2,1,2),
+% boxplot(velocity_error_sideways_tot,peaks_hist_tot)
+% ylim([0 0.3])
+% ylabel('Velocity Error [m/s]')
+% 
+% xlabel('Amount of peaks')
+% title('Boxplot y-direction')
+% 
+% , hold on,
 
 figure
-subplot(2,1,1),
+subplot(1,2,1),
 boxplot(velocity_error_forward_tot,round(mean_distance_tot*2)/2)
 ylim([0 0.3])
-xlim([1.5 7.5])
-ylabel('Vel Error (x) [m/s]')
-% title('Boxplot  x-direction')
+xlim([1.5 6.5])
+ylabel('Velocity Error [m/s]')
+title('x')
+xlabel('Mean depth measured [m]')
 
-subplot(2,1,2),
+subplot(1,2,2),
 boxplot(velocity_error_sideways_tot,round(mean_distance_tot*2)/2)
 ylim([0 0.3])
-xlim([1.5 7.5])
+xlim([1.5 6.5])
 
-ylabel('Vel Error (y) [m/s]')
 xlabel('Mean depth measured [m]')
 % title('Boxplot  y-direction')
 , hold on,
+title('y')
 
 if (make_plots_journal)
     filename_savevel = sprintf('generated_plots/boxplot1',stereoboard_type,track);

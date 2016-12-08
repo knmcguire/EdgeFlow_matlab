@@ -46,7 +46,7 @@ else
     plot(  time, velocity_x_edgeflow),
     plot(  time, velocity_x_farneback,'g') ,
     plot(  time, velocity_x_lucaskanade,'m:');
-    plot(time,velocity_x_edgeflow_global,'r--');
+%     plot(time,velocity_x_edgeflow_global,'r--');
     plot(  time, velocity_x_edgeflow, 'r'),
 
     plot(time,zeros(size(time)),'k:'),
@@ -56,7 +56,7 @@ else
     
     xlim_figure =get(gca,'xlim');
     if track==4
-        hleg= legend({'Groundtruth','EdgeFlow',...
+        hleg= legend({'Groundtruth','Edge-FS',...
             'FarneBack', 'Lucas Kanade'},'orientation','horizontal' ,'Location','southwest');
         set(hleg,'FontSize',5);
         legend boxoff
@@ -81,7 +81,7 @@ else
     plot(  time, -velocity_y_edgeflow),
     plot(  time, -velocity_y_farneback,'g')
     s=plot(  time, -velocity_y_lucaskanade,'m:');
-        plot(time, -velocity_y_edgeflow_global,'r--');
+%         plost(time, -velocity_y_edgeflow_global,'r--');
     plot(  time, -velocity_y_edgeflow, 'r'),
 
 
