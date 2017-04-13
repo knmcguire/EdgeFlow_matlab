@@ -128,7 +128,7 @@ for i= start_i:end_i
                 
                 
             end
-            %         keyboard
+            
             pause(0.1)
             frame = getframe(gcf); % 'gcf' can handle if you zoom in to take a movie.
             writeVideo(writerObj, frame);
@@ -168,8 +168,10 @@ end
 velocity_tot_forward_plot(1:max_frame_horizon*2) = 0;
 velocity_tot_sideways_plot(1:max_frame_horizon*2) = 0;
 
-velocity_error_forward= abs(velocity_tot_forward_plot(3:end)' - cam_Vz_frame(3:end));
-velocity_error_sideways= abs(velocity_tot_sideways_plot(3:end)' - cam_Vx_frame(3:end));
+velocity_error_forward = abs(velocity_tot_forward_plot(3:end)' - cam_Vz_frame(3:end));
+velocity_error_sideways = abs(velocity_tot_sideways_plot(3:end)' - cam_Vx_frame(3:end));
+velocity_error_forward_glob = abs(velocity_tot_forward_global_plot(3:end)' - cam_Vz_frame(3:end));
+velocity_error_sideways_glob = abs(velocity_tot_sideways_global_plot(3:end)' - cam_Vx_frame(3:end));
 peaks_hist = peaks_hist(3:end)';
 matching_error_flow_t = matching_error_flow_t(3:end)';
 mean_distance = mean_distance(3:end)';

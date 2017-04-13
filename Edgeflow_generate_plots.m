@@ -2,12 +2,12 @@
 
 if(~make_plots_journal)
     
-    figure(1),subplot(2,1,1), plot(t_frame(3:end),cam_Vz_frame(3:end))
+    figure(1),subplot(3,1,1), plot(t_frame(3:end),cam_Vz_frame(3:end))
     xlim([t_frame(1),t_frame(end)])
     hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_plot(start_i:end_i),'r');
-    
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_FB_plot(start_i:end_i),'g');
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_LK_plot(start_i:end_i),'k');
+    plot(t_frame(start_i:end_i),velocity_tot_forward_global_plot(start_i:end_i),'m');
+    plot(t_frame(start_i:end_i),velocity_tot_forward_FB_plot(start_i:end_i),'g');
+    plot(t_frame(start_i:end_i),velocity_tot_forward_LK_plot(start_i:end_i),'k');
     
     hold off
     ylim([-1 1])
@@ -16,22 +16,30 @@ if(~make_plots_journal)
     xlabel('Time[s]')
     title(['Forward Velocity of dataset ',num2str(track)])
     
-    subplot(2,1,2), plot(t_frame(start_i:end_i),cam_Vx_frame(start_i:end_i))
+    subplot(3,1,2), plot(t_frame(start_i:end_i),cam_Vx_frame(start_i:end_i))
     
     hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_plot(start_i:end_i),'r');
-    
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_FB_plot(start_i:end_i),'g');
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_LK_plot(start_i:end_i),'k');
+    plot(t_frame(start_i:end_i),velocity_tot_sideways_global_plot(start_i:end_i),'m');
+    plot(t_frame(start_i:end_i),velocity_tot_sideways_FB_plot(start_i:end_i),'g');
+    plot(t_frame(start_i:end_i),velocity_tot_sideways_LK_plot(start_i:end_i),'k');
     
     hold off
     
     ylim([-1 1])
     xlim([t_frame(1),t_frame(end)])
-    legend('Ground Truth', 'Edge Flow', 'F\"arneback','Lucas Kanade')
+    legend('Ground Truth', 'Edge Flow', 'edgeflow global', 'F\"arneback','Lucas Kanade')
     
     ylabel('velocity')
     xlabel('Time[s]')
     title(['Sideways Velocity of dataset ',num2str(track)])
+    
+    subplot(3,1,3)
+    plot(t_frame(start_i:end_i),cam_Vy_frame(start_i:end_i)); hold on
+    plot(t_frame(start_i:end_i),velocity_tot_sideways_vertical_plot(start_i:end_i),'m'); hold off
+    
+    ylabel('velocity')
+    xlabel('Time[s]')
+    title(['Vertical Velocity of dataset ',num2str(track)])
 else
     
     

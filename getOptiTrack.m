@@ -1,4 +1,4 @@
-function [cam_Vx_frame, cam_Vz_frame, yaw_frame, t_frame] = getOptiTrack(track,database_loc)
+function [cam_Vx_frame, cam_Vy_frame, cam_Vz_frame, yaw_frame, t_frame] = getOptiTrack(track,database_loc)
 
 % keyboard
 
@@ -79,6 +79,7 @@ cam_Vx = Vx.*cos(yaw*pi/180)-Vz.*sin(yaw*pi/180);
 cam_Vz = Vz.*cos(yaw*pi/180)+Vx.*sin(yaw*pi/180);
 
 cam_Vx_frame = cam_Vx(index_frame); % lateral velocity (positive ->)
+cam_Vy_frame = Vy(index_frame); % down positive
 cam_Vz_frame = cam_Vz(index_frame); % longitudinal velocity (positive is forward)
 
 cam_X = X.*cos(yaw*pi/180)-Z.*sin(yaw*pi/180);

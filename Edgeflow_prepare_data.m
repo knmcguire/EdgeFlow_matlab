@@ -10,7 +10,7 @@ database_loc ='stereoboard_testing/stereoboard_database/database_stereoboard_2/f
 shift_stereo_image = -2;
 end
 
-[cam_Vx_frame, cam_Vz_frame, yaw_frame, t_frame] = getOptiTrack(track,database_loc);
+[cam_Vx_frame, cam_Vy_frame, cam_Vz_frame, yaw_frame, t_frame] = getOptiTrack(track,database_loc);
 
 %First 4 measurements tend to be faulty
 cam_Vx_frame(1:4)=0;

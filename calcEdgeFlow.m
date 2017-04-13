@@ -32,7 +32,7 @@ pixelrot.y = 0;
 
 [new_parameters,displacement,edge_histogram,frame_previous_number matching_error_flow]=...
     edge_flow_v2(Fx_hist_left,Fy_hist_left,edge_histogram,previous_parameters,...
-    frame_previous_number_prev,window,max_search_distance,max_frame_horizon,pixelrot);
+    frame_previous_number_prev,window,max_search_distance,max_frame_horizon,pixelrot, disp_distance);
 
 displacement_stereo_global=SAD_blockmatching_full_image(Fx_hist_left,Fx_hist_right,max_search_distance,shift_stereo_image);
 
@@ -56,18 +56,24 @@ distance(find(faulty_distance==0)) = pxperrad*0.06./disp_distance(find(faulty_di
 %Save the mean distance measured
 mean_distance(i) = mean(distance(find(faulty_distance==0)));
 
+% figure(2)
+% plot(distance)
+% mean(distance(find(faulty_distance==0)))
+% pxperrad*0.06./mean(disp_distance(find(faulty_distance==0)))
+% pause
+
 prev_disp_distance = disp_distance;
 pixelshift_yaw_derotate_EF=-deg2rad(yaw_frame(i-frame_previous_number.x)-yaw_frame(i))*pxperrad/frame_previous_number.x;
 
 %Derotation (based on IMU (1))
 displacement.x  = displacement.x - pixelshift_yaw_derotate_EF;
-displacement.x([1:border,end-border:end]) =0;
+displacement.x([1:border,end-border:end]) = 0;
 
 %%%%%%%%%%%%%%%%%%%%% Calculate Velocity %%%%%%%%%%%%%%%%%%%%
 frequency = 1/(t_frame(i)-t_frame(i-1));
 
 %multiply distance with displacement.
-velocity_column_forward=  distance.*displacement.x*frequency;
+velocity_column_forward = distance.*displacement.x*frequency;
 
 %Prepare data for linefit
 velocity_x_ptx=[1:image_size(2)];
@@ -75,7 +81,6 @@ velocity_x_ptx=velocity_x_ptx(find(faulty_distance==0));
 velocity_x_pty=velocity_column_forward(find(faulty_distance==0));
 
 if(fitting==1)
-    
     px=polyfit(velocity_x_ptx,velocity_x_pty,1);
 end
 
@@ -100,18 +105,19 @@ end
 
 %%
 % distance_stereo_global =  pxperrad*0.06./(displacement_stereo_global );
-distance_stereo_global = (mean(distance));
+distance_stereo_global = 1;% mean_distance(i);
 
 velocity_tot_forward_global = new_parameters.divergence.x * distance_stereo_global * frequency;
-velocity_tot_sideways_global = (new_parameters.translation.x+new_parameters.divergence.x*round(image_size(2)/2))*radperpx * distance_stereo_global * frequency;
-
+velocity_tot_sideways_global = new_parameters.translation.x * radperpx * distance_stereo_global * frequency;
+velocity_tot_vertical_global = new_parameters.translation.y * radperpy * distance_stereo_global * frequency;
 
 % keyboard
 velocity_tot_forward_pixelwise = px(1);
 velocity_tot_sideways_pixelwise = (px(2)+px(1)*round(image_size(2)/2))*radperpx;
 
 matching_error_flow_t(i) = mean(matching_error_flow.x);
-velocity_tot_forward_plot(i) =   velocity_tot_forward_pixelwise;
+velocity_tot_forward_plot(i) = velocity_tot_forward_pixelwise;
 velocity_tot_sideways_plot(i) = velocity_tot_sideways_pixelwise;
-velocity_tot_forward_global_plot(i) =   velocity_tot_forward_global;
+velocity_tot_forward_global_plot(i) = velocity_tot_forward_global;
 velocity_tot_sideways_global_plot(i) = velocity_tot_sideways_global;
+velocity_tot_sideways_vertical_plot(i) = velocity_tot_vertical_global;
