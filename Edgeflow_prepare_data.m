@@ -13,9 +13,9 @@ end
 [cam_Vx_frame, cam_Vy_frame, cam_Vz_frame, yaw_frame, t_frame] = getOptiTrack(track,database_loc);
 
 %First 4 measurements tend to be faulty
-cam_Vx_frame(1:4)=0;
-cam_Vz_frame(1:4)=0;
-yaw_frame(1:4)=0;
+cam_Vx_frame(1:4) =0;
+cam_Vz_frame(1:4) =0;
+yaw_frame(1:4) =0;
 
 
 
@@ -36,9 +36,9 @@ names= sort_nat(names);
 
 % Determine which frames to use from data set
 
-start_i=1;
-end_i=size(names,1)-1;
-t_frame = t_frame(start_i:end_i);
-cam_Vx_frame = cam_Vx_frame(start_i:end_i);
-cam_Vz_frame = cam_Vz_frame(start_i:end_i);
-
+start_i = 5;
+end_i = size(names,1)-5;
+% t_frame = t_frame(start_i:end_i);
+% cam_Vx_frame = cam_Vx_frame(start_i:end_i);
+% cam_Vy_frame = cam_Vy_frame(start_i:end_i);
+% cam_Vz_frame = cam_Vz_frame(start_i:end_i);

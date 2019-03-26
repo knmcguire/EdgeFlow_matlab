@@ -5,9 +5,7 @@ function [cam_Vx_frame, cam_Vy_frame, cam_Vz_frame, yaw_frame, t_frame] = getOpt
 %% load image timing data
 
 time=fopen([database_loc num2str(track) '/timing.dat']);
-
-
-    tline = fgets(time);
+tline = fgets(time);
 
 tims=textscan(time,'%f	%f');
 
@@ -19,15 +17,15 @@ t_frame_uncheck = tims{1};
 t_frame = [];
 
 
-for i =1:length(check_image)
+for i = 1:length(check_image)
     if check_image(i) == 1
-t_frame=[t_frame;t_frame_uncheck(i)];
+        t_frame=[t_frame; t_frame_uncheck(i)];
     end
 % keyboard
 end
 % remove either first or last timestamp to match number of images
-% t_frame = t_frame(1:end-1);
-
+t_frame = t_frame(2:end);
+t_frame = t_frame - 0.3;
 
 %% load optitrack data
 position=fopen([database_loc num2str(track) '/position.dat']);
@@ -53,12 +51,10 @@ frame_number = t;
 prev_index_frame = 1;
 
 for i = 1:length(t_frame)
-    
     [time_error,index_frame(i)] = min(abs(t_frame(i)-t));
     
     frame_number(prev_index_frame:index_frame(i)) = i-1;
     prev_index_frame = index_frame(i);
-    
 end
 
 %% smooth data
