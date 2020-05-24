@@ -2,42 +2,56 @@
 
 if(~make_plots_journal)
     
-    figure(1),subplot(2,1,1), plot(t_frame(3:end),cam_Vz_frame(3:end))
+    figure(1),subplot(3,1,1), plot(t_frame(start_i:end_i),cam_Vz_frame(start_i:end_i))
     xlim([t_frame(1),t_frame(end)])
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_plot(start_i:end_i),'r');
-    
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_FB_plot(start_i:end_i),'g');
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_forward_LK_plot(start_i:end_i),'k');
+    hold on, plot(t_frame(start_i:i),velocity_tot_forward_plot(start_i:i),'r');
+    plot(t_frame(start_i:i),velocity_tot_forward_global_plot(start_i:i),'m');
+    plot(t_frame(start_i:i),velocity_tot_forward_FB_plot(start_i:i),'g');
+    plot(t_frame(start_i:i),velocity_tot_forward_LK_plot(start_i:i),'k');
     
     hold off
-    ylim([-1 1])
+    ylim([-.5 .5])
     xlim([t_frame(1),t_frame(end)])
     ylabel('velocity')
     xlabel('Time[s]')
     title(['Forward Velocity of dataset ',num2str(track)])
     
-    subplot(2,1,2), plot(t_frame(start_i:end_i),cam_Vx_frame(start_i:end_i))
+    subplot(3,1,2), plot(t_frame(start_i:end_i),cam_Vx_frame(start_i:end_i))
     
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_plot(start_i:end_i),'r');
-    
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_FB_plot(start_i:end_i),'g');
-    hold on, plot(t_frame(start_i:end_i),velocity_tot_sideways_LK_plot(start_i:end_i),'k');
+    hold on, plot(t_frame(start_i:i),velocity_tot_sideways_plot(start_i:i),'r');
+    plot(t_frame(start_i:i),velocity_tot_sideways_global_plot(start_i:i),'m');
+    plot(t_frame(start_i:i),velocity_tot_sideways_FB_plot(start_i:i),'g');
+    plot(t_frame(start_i:i),velocity_tot_sideways_LK_plot(start_i:i),'k');
     
     hold off
     
-    ylim([-1 1])
+    ylim([-.4 .4])
     xlim([t_frame(1),t_frame(end)])
-    legend('Ground Truth', 'Edge Flow', 'F\"arneback','Lucas Kanade')
+    legend('Ground Truth', 'Edge Flow', 'edgeflow global', 'F\"arneback','Lucas Kanade')
     
     ylabel('velocity')
     xlabel('Time[s]')
     title(['Sideways Velocity of dataset ',num2str(track)])
+    
+    vals = find(~isnan(velocity_tot_sideways_global_plot));
+    vals = vals(2:end);
+    sum((cam_Vx_frame(vals)' - velocity_tot_sideways_global_plot(vals)).^2)
+    
+    subplot(3,1,3)
+    plot(t_frame(start_i:end_i),cam_Vy_frame(start_i:end_i)); hold on
+    plot(t_frame(start_i:i),velocity_tot_sideways_vertical_plot(start_i:i),'m'); hold off
+    
+    vals = find(~isnan(velocity_tot_sideways_vertical_plot));
+    vals = vals(2:end);
+    sum((cam_Vy_frame(vals)' - velocity_tot_sideways_vertical_plot(vals)).^2)
+    
+    ylabel('velocity')
+    xlabel('Time[s]')
+    title(['Vertical Velocity of dataset ',num2str(track)])
 else
     
-    
-    time = t_frame(start_i:end_i);
-    
-    
+    time = t_frame;
+
     figure,subplot(2,1,1),
     
     plot(  time, velocity_x_optitrack),
