@@ -13,4 +13,7 @@ The images used by these scripts are available at the github repository https://
 
 	git submodule init
 	git submodule update
+	
+	
+Also this repo relies on the matlabpackes matlab2tikzz (https://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz)
 
